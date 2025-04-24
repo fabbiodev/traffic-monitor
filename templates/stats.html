@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 style="text-align:center">{{ _('Hourly Statistics') }}</h1>
+
+<div class="stats-container">
+    <table class="stats-table" id="yesterday-table">
+        <caption>{{ _('Yesterday') }}</caption>
+        <thead>
+            <tr>
+                <th>{{ _('Hour') }}</th>
+                <th>{{ _('Total Sent') }}</th>
+                <th>{{ _('Total Recv') }}</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <table class="stats-table" id="today-table">
+        <caption>{{ _('Today') }}</caption>
+        <thead>
+            <tr>
+                <th>{{ _('Hour') }}</th>
+                <th>{{ _('Total Sent') }}</th>
+                <th>{{ _('Total Recv') }}</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<canvas id="trafficChart" height="120"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+function fetchStats(){
+    fetch('/api/stats')
+    .then(r=>r.json())
+    .then(rows=>{
+        if(!Array.isArray(rows)){return;}
+        const yBody=document.querySelector('#yesterday-table tbody');
+        const tBody=document.querySelector('#today-table tbody');
+        yBody.innerHTML=''; tBody.innerHTML='';
+        const dataSent=[], dataRecv=[], labels=[];
+        rows.forEach((r,idx)=>{
+            // basic sanity check for hour format YYYY-MM-DD HH:00:00
+            if(!/^\d{4}-\d{2}-\d{2} \d{2}:00:00$/.test(r.hour)){return;}
+            const tr=document.createElement('tr');
+            tr.innerHTML=`<td>${r.hour.slice(11,13)}:00</td><td>${r.total_sent}</td><td>${r.total_recv}</td>`;
+            const isYesterday = idx<24;
+            (isYesterday?yBody:tBody).appendChild(tr);
+            // build chart arrays
+            labels.push(r.hour.slice(11,13)+':00');
+            dataSent.push(parseFloat(r.avg_sent)); // avg text includes unit, skip for now
+            dataRecv.push(parseFloat(r.avg_recv));
+        });
+
+        // Draw chart
+        drawChart(labels,dataSent,dataRecv);
+    })
+    .catch(console.error);
+}
+
+let chart;
+function drawChart(labels, sent, recv){
+    // only numbers; if NaN skip draw
+    const ctx=document.getElementById('trafficChart').getContext('2d');
+    if(chart){chart.destroy();}
+    chart=new Chart(ctx,{
+        type:'line',
+        data:{
+            labels:labels,
+            datasets:[
+                {label:'Avg Sent (B/s)',data:sent,fill:false},
+                {label:'Avg Recv (B/s)',data:recv,fill:false}
+            ]
+        },
+        options:{
+            responsive:true,
+            interaction:{mode:'index'},
+            scales:{y:{beginAtZero:true}}
+        }
+    });
+}
+
+fetchStats();
+setInterval(fetchStats,60000);
+</script>
+{% endblock %}

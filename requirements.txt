@@ -1,0 +1,4 @@
+flask>=3
+flask-babel>=4
+psutil>=5
+gunicorn>=21

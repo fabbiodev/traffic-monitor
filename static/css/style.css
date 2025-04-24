@@ -1,0 +1,29 @@
+:root {
+    --bg:#121212;
+    --fg:#e0e0e0;
+    --accent:#2a2a2a;
+    --border:#333;
+}
+body{background:var(--bg);color:var(--fg);font-family:Arial,Helvetica,sans-serif;margin:0}
+nav{background:#1f1f1f;padding:1rem}
+nav a{color:var(--fg);margin-right:1rem;text-decoration:none}
+table{width:100%;border-collapse:collapse;margin:1rem 0}
+th,td{border:1px solid var(--border);padding:.5rem;text-align:left}
+th{background:var(--accent)}
+
+/* dashboard redesign */
+.dashboard{display:flex;justify-content:center;align-items:center;min-height:70vh}
+.card{background:#1e1e1e;border-radius:16px;padding:2rem 3rem;box-shadow:0 0 20px rgba(0,0,0,.7);text-align:center}
+.card h2{margin:0 0 1rem;font-size:2rem;color:#90caf9}
+.traffic{display:flex;gap:4rem;justify-content:center}
+.rate{display:flex;flex-direction:column;align-items:center}
+.value{font-size:3rem;font-weight:700;color:#ffffff}
+.label{font-size:1rem;color:#b0b0b0;margin-top:.25rem}
+
+
+/* stats tables */
+.stats-container{display:flex;gap:2rem;justify-content:center;flex-wrap:wrap}
+.stats-table{background:#1e1e1e;border-radius:12px;overflow:hidden;min-width:280px}
+.stats-table caption{background:#2a2a2a;padding:.5rem;font-weight:700;color:#90caf9}
+.stats-table th,.stats-table td{border:none;text-align:center}
+

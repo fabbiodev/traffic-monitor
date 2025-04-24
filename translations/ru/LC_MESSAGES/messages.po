@@ -1,0 +1,42 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "Network Monitor"
+msgstr "Мониторинг сети"
+
+msgid "Home"
+msgstr "Главная"
+
+msgid "Statistics"
+msgstr "Статистика"
+
+msgid "Current Network Traffic"
+msgstr "Текущий сетевой трафик"
+
+msgid "Interface"
+msgstr "Интерфейс"
+
+msgid "Bytes Sent/s"
+msgstr "Байт отправлено/с"
+
+msgid "Bytes Recv/s"
+msgstr "Байт получено/с"
+
+msgid "Hourly Statistics"
+msgstr "Почасовая статистика"
+
+msgid "Hour"
+msgstr "Час"
+
+msgid "Total Sent"
+msgstr "Всего отправлено"
+
+msgid "Total Recv"
+msgstr "Всего получено"
+
+msgid "Avg Sent/s"
+msgstr "Средн. отправлено/с"
+
+msgid "Avg Recv/s"
+msgstr "Средн. получено/с"

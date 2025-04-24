@@ -1,0 +1,42 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "Network Monitor"
+msgstr "Network Monitor"
+
+msgid "Home"
+msgstr "Home"
+
+msgid "Statistics"
+msgstr "Statistics"
+
+msgid "Current Network Traffic"
+msgstr "Current Network Traffic"
+
+msgid "Interface"
+msgstr "Interface"
+
+msgid "Bytes Sent/s"
+msgstr "Bytes Sent/s"
+
+msgid "Bytes Recv/s"
+msgstr "Bytes Recv/s"
+
+msgid "Hourly Statistics"
+msgstr "Hourly Statistics"
+
+msgid "Hour"
+msgstr "Hour"
+
+msgid "Total Sent"
+msgstr "Total Sent"
+
+msgid "Total Recv"
+msgstr "Total Recv"
+
+msgid "Avg Sent/s"
+msgstr "Avg Sent/s"
+
+msgid "Avg Recv/s"
+msgstr "Avg Recv/s"

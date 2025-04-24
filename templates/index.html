@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="dashboard">
+    <div class="card">
+        <h2>{{ _('Interface') }}: ens3</h2>
+        <div class="traffic">
+            <div class="rate">
+                <span id="sent" class="value">--</span>
+                <span class="label">{{ _('Bytes Sent') }}/s</span>
+            </div>
+            <div class="rate">
+                <span id="recv" class="value">--</span>
+                <span class="label">{{ _('Bytes Recv') }}/s</span>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+function refresh(){
+    fetch('/api/current')
+      .then(r=>r.json())
+      .then(d=>{
+          const iface='ens3';
+          if(d[iface]){
+              document.getElementById('sent').textContent=d[iface].sent;
+              document.getElementById('recv').textContent=d[iface].recv;
+          } else {
+              document.getElementById('sent').textContent='N/A';
+              document.getElementById('recv').textContent='N/A';
+          }
+      })
+      .catch(()=>{});
+}
+setInterval(refresh,1000); refresh();
+</script>
+{% endblock %}
