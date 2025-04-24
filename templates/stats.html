@@ -12,13 +12,13 @@
       </tr>
     </thead>
     <tbody>
-      {% for hr, ai, ti, ao, to in yesterday %}
+      {% for row in yesterday %}
       <tr>
-        <td>{{ hr }}:00</td>
-        <td>{{ (ai|float)|round(2) }} B/s</td>
-        <td>{{ ti }} B</td>
-        <td>{{ (ao|float)|round(2) }} B/s</td>
-        <td>{{ to }} B</td>
+        <td>{{ row.hour }}</td>
+        <td>{{ row.avg_in }}</td>
+        <td>{{ row.tot_in }}</td>
+        <td>{{ row.avg_out }}</td>
+        <td>{{ row.tot_out }}</td>
       </tr>
       {% endfor %}
     </tbody>
@@ -36,13 +36,13 @@
       </tr>
     </thead>
     <tbody>
-      {% for hr, ai, ti, ao, to in today %}
+      {% for row in today %}
       <tr>
-        <td>{{ hr }}:00</td>
-        <td>{{ (ai|float)|round(2) }} B/s</td>
-        <td>{{ ti }} B</td>
-        <td>{{ (ao|float)|round(2) }} B/s</td>
-        <td>{{ to }} B</td>
+        <td>{{ row.hour }}</td>
+        <td>{{ row.avg_in }}</td>
+        <td>{{ row.tot_in }}</td>
+        <td>{{ row.avg_out }}</td>
+        <td>{{ row.tot_out }}</td>
       </tr>
       {% endfor %}
     </tbody>

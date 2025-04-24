@@ -29,7 +29,7 @@ db_conn = init_db()
 previous = psutil.net_io_counters()
 traffic_data = {'in': 0, 'out': 0}
 
-# — Фоновый сбор трафика и запись в БД —
+# — Сбор и запись трафика —
 def update_traffic():
     global previous, traffic_data
     cur = db_conn.cursor()
@@ -48,7 +48,7 @@ def update_traffic():
         )
         db_conn.commit()
 
-# — Утилиты —
+# — Форматирование в удобные единицы —
 def format_bps(v):
     if v >= 1024**2:
         return f"{v/1024**2:.2f} MB/s"
@@ -56,44 +56,41 @@ def format_bps(v):
         return f"{v/1024:.2f} KB/s"
     return f"{v} B/s"
 
+def format_bytes(v):
+    if v >= 1024**3:
+        return f"{v/1024**3:.2f} GB"
+    if v >= 1024**2:
+        return f"{v/1024**2:.2f} MB"
+    if v >= 1024:
+        return f"{v/1024:.2f} KB"
+    return f"{v} B"
+
 def get_lang():
     a = request.headers.get('Accept-Language', '').lower()
     return 'ru' if a.startswith('ru') else 'en'
 
 texts = {
     'en': {
-        'home': 'Home',
-        'stats': 'Statistics',
-        'incoming': 'Incoming',
-        'outgoing': 'Outgoing',
-        'hour': 'Hour',
-        'avg_speed': 'Average Speed',
-        'total': 'Total Traffic',
-        'today': 'Today',
-        'yesterday': 'Yesterday'
+        'home': 'Home',   'stats': 'Statistics',
+        'incoming': 'Incoming','outgoing': 'Outgoing',
+        'hour': 'Hour',   'avg_speed': 'Avg Speed', 'total': 'Total',
+        'today': 'Today', 'yesterday': 'Yesterday'
     },
     'ru': {
-        'home': 'Главная',
-        'stats': 'Статистика',
-        'incoming': 'Входящий',
-        'outgoing': 'Исходящий',
-        'hour': 'Час',
-        'avg_speed': 'Сред. скорость',
-        'total': 'Всего трафика',
-        'today': 'Сегодня',
-        'yesterday': 'Вчера'
+        'home': 'Главная','stats': 'Статистика',
+        'incoming': 'Входящий','outgoing': 'Исходящий',
+        'hour': 'Час',    'avg_speed': 'Сред. скорость','total': 'Всего',
+        'today': 'Сегодня','yesterday': 'Вчера'
     }
 }
 
-# — Маршруты —
 @app.route('/')
 def index():
     lang = get_lang()
     return render_template('index.html',
         incoming=format_bps(traffic_data['in']),
         outgoing=format_bps(traffic_data['out']),
-        texts=texts[lang],
-        lang=lang
+        texts=texts[lang], lang=lang
     )
 
 @app.route('/stats')
@@ -109,35 +106,44 @@ def stats():
         cur.execute('''
             SELECT 
               strftime('%H', timestamp) AS hour,
-              AVG(incoming) AS avg_in,
-              SUM(incoming) AS tot_in,
-              AVG(outgoing) AS avg_out,
-              SUM(outgoing) AS tot_out
+              AVG(incoming) AS ai, SUM(incoming) AS ti,
+              AVG(outgoing) AS ao, SUM(outgoing) AS to
             FROM traffic
             WHERE timestamp BETWEEN ? AND ?
             GROUP BY hour
             ORDER BY hour
         ''', (start, end))
-        return cur.fetchall()
+        rows = cur.fetchall()
+        data = []
+        for hr, ai, ti, ao, to in rows:
+            data.append({
+                'hour':     f"{hr}:00",
+                'avg_in':   format_bps(ai),
+                'tot_in':   format_bytes(ti),
+                'avg_out':  format_bps(ao),
+                'tot_out':  format_bytes(to),
+            })
+        return data
 
-    yesterday = query(1)
-    today     = query(0)
     return render_template('stats.html',
-        yesterday=yesterday,
-        today=today,
-        texts=texts[lang],
-        lang=lang
+        yesterday=query(1),
+        today=    query(0),
+        texts=texts[lang], lang=lang
     )
 
 @app.route('/api')
 def api():
     return jsonify({
-        'incoming': traffic_data['in'],
-        'outgoing': traffic_data['out'],
+        'incoming':       traffic_data['in'],
+        'outgoing':       traffic_data['out'],
         'incoming_human': format_bps(traffic_data['in']),
         'outgoing_human': format_bps(traffic_data['out'])
     })
 
-if __name__ == '__main__':
+# — Запуск фонового потока под Gunicorn/Docker —
+@app.before_first_request
+def activate_job():
     threading.Thread(target=update_traffic, daemon=True).start()
+
+if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001)

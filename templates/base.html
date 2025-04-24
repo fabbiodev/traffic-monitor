@@ -2,7 +2,8 @@
 <html lang="{{ lang }}">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="refresh" content="{{ 1 if request.path=='/' else 0 }}">
+  <!-- главная — каждую секунду, статистика — раз в минуту -->
+  <meta http-equiv="refresh" content="{{ 1 if request.path=='/' else 60 }}">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>📡 Traffic Monitor</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
