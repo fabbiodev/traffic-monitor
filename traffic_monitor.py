@@ -4,7 +4,7 @@ import threading
 import sqlite3
 import datetime
 
-from flask import Flask, render_template, jsonify, request, url_for
+from flask import Flask, render_template, jsonify, request
 import psutil
 
 app = Flask(__name__)
@@ -65,6 +65,7 @@ def format_bytes(v):
         return f"{v/1024:.2f} KB"
     return f"{v} B"
 
+# — Определение языка по заголовку —
 def get_lang():
     a = request.headers.get('Accept-Language', '').lower()
     return 'ru' if a.startswith('ru') else 'en'
@@ -72,15 +73,15 @@ def get_lang():
 texts = {
     'en': {
         'home': 'Home',   'stats': 'Statistics',
-        'incoming': 'Incoming','outgoing': 'Outgoing',
+        'incoming': 'Incoming', 'outgoing': 'Outgoing',
         'hour': 'Hour',   'avg_speed': 'Avg Speed', 'total': 'Total',
         'today': 'Today', 'yesterday': 'Yesterday'
     },
     'ru': {
-        'home': 'Главная','stats': 'Статистика',
-        'incoming': 'Входящий','outgoing': 'Исходящий',
-        'hour': 'Час',    'avg_speed': 'Сред. скорость','total': 'Всего',
-        'today': 'Сегодня','yesterday': 'Вчера'
+        'home': 'Главная', 'stats': 'Статистика',
+        'incoming': 'Входящий', 'outgoing': 'Исходящий',
+        'hour': 'Час',    'avg_speed': 'Сред. скорость', 'total': 'Всего',
+        'today': 'Сегодня', 'yesterday': 'Вчера'
     }
 }
 
@@ -90,7 +91,8 @@ def index():
     return render_template('index.html',
         incoming=format_bps(traffic_data['in']),
         outgoing=format_bps(traffic_data['out']),
-        texts=texts[lang], lang=lang
+        texts=texts[lang],
+        lang=lang
     )
 
 @app.route('/stats')
@@ -117,18 +119,19 @@ def stats():
         data = []
         for hr, ai, ti, ao, to in rows:
             data.append({
-                'hour':     f"{hr}:00",
-                'avg_in':   format_bps(ai),
-                'tot_in':   format_bytes(ti),
-                'avg_out':  format_bps(ao),
-                'tot_out':  format_bytes(to),
+                'hour':    f"{hr}:00",
+                'avg_in':  format_bps(ai),
+                'tot_in':  format_bytes(ti),
+                'avg_out': format_bps(ao),
+                'tot_out': format_bytes(to),
             })
         return data
 
     return render_template('stats.html',
         yesterday=query(1),
-        today=    query(0),
-        texts=texts[lang], lang=lang
+        today=query(0),
+        texts=texts[lang],
+        lang=lang
     )
 
 @app.route('/api')
@@ -140,10 +143,8 @@ def api():
         'outgoing_human': format_bps(traffic_data['out'])
     })
 
-# — Запуск фонового потока под Gunicorn/Docker —
-@app.before_first_request
-def activate_job():
-    threading.Thread(target=update_traffic, daemon=True).start()
+# — Запуск фонового потока мониторинга сразу при импорте модуля —
+threading.Thread(target=update_traffic, daemon=True).start()
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001)
