@@ -1,0 +1,54 @@
+:root {
+  --bg: #1e1e2f;
+  --card: #27293d;
+  --accent: #4e9af1;
+  --text: #e0e0e0;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Segoe UI', sans-serif;
+}
+.navbar {
+  background: var(--card);
+  padding: 0.5rem 1rem;
+}
+.navbar .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.logo { font-size: 1.4rem; text-decoration: none; color: var(--accent); }
+.nav-links { list-style: none; display: flex; gap: 1rem; }
+.nav-links a {
+  text-decoration: none;
+  color: var(--text);
+  transition: color .2s;
+}
+.nav-links a:hover { color: var(--accent); }
+.container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+.card {
+  background: var(--card);
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin: 1rem 0;
+  text-align: center;
+}
+.card h2 { font-size: 1.2rem; margin-bottom: 0.5rem; }
+.card .value { font-size: 2rem; color: var(--accent); }
+.stats-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0 2rem;
+}
+.stats-table th, .stats-table td {
+  border: 1px solid #444;
+  padding: 0.5rem;
+  text-align: center;
+}
+.stats-table th { background: var(--card); }

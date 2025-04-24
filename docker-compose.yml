@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  traffic_monitor:
+    build: .
+    container_name: traffic_monitor
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./traffic.db:/app/traffic.db
+    restart: always

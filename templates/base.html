@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="refresh" content="{{ 1 if request.path=='/' else 0 }}">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>📡 Traffic Monitor</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <a href="{{ url_for('index') }}" class="logo">📡 Traffic Monitor</a>
+      <ul class="nav-links">
+        <li><a href="{{ url_for('index') }}">{{ texts.home }}</a></li>
+        <li><a href="{{ url_for('stats') }}">{{ texts.stats }}</a></li>
+      </ul>
+    </div>
+  </nav>
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

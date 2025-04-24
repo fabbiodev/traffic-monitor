@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h2>{{ texts.yesterday }}</h2>
+  <table class="stats-table">
+    <thead>
+      <tr>
+        <th>{{ texts.hour }}</th>
+        <th>{{ texts.avg_speed }} in</th>
+        <th>{{ texts.total }} in</th>
+        <th>{{ texts.avg_speed }} out</th>
+        <th>{{ texts.total }} out</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for hr, ai, ti, ao, to in yesterday %}
+      <tr>
+        <td>{{ hr }}:00</td>
+        <td>{{ (ai|float)|round(2) }} B/s</td>
+        <td>{{ ti }} B</td>
+        <td>{{ (ao|float)|round(2) }} B/s</td>
+        <td>{{ to }} B</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h2>{{ texts.today }}</h2>
+  <table class="stats-table">
+    <thead>
+      <tr>
+        <th>{{ texts.hour }}</th>
+        <th>{{ texts.avg_speed }} in</th>
+        <th>{{ texts.total }} in</th>
+        <th>{{ texts.avg_speed }} out</th>
+        <th>{{ texts.total }} out</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for hr, ai, ti, ao, to in today %}
+      <tr>
+        <td>{{ hr }}:00</td>
+        <td>{{ (ai|float)|round(2) }} B/s</td>
+        <td>{{ ti }} B</td>
+        <td>{{ (ao|float)|round(2) }} B/s</td>
+        <td>{{ to }} B</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
